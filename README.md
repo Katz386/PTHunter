@@ -1,5 +1,5 @@
 ![Alt Text](images/pthbanner.gif)
-![](https://img.shields.io/github/stars/PTHunter/editor.md.svg) ![](https://img.shields.io/github/forks/PTHunter/editor.md.svg) ![](https://img.shields.io/github/tag/PTHunter/editor.md.svg) ![](https://img.shields.io/github/release/PTHunter/editor.md.svg) ![](https://img.shields.io/github/issues/PTHunter/editor.md.svg)
+![](https://img.shields.io/github/stars/Katz386/PTHunter.svg) ![](https://img.shields.io/github/forks/Katz386/PTHunter.svg) ![](https://img.shields.io/github/tag/Katz386/PTHunter.svg) ![](https://img.shields.io/github/release/Katz386/PTHunter.svg) ![](https://img.shields.io/github/issues/Katz386/PTHunter.svg)
 
 # PTHunter
 PTHunter is a command-line tool designed to automate the detection of Path Traversal vulnerabilities in web applications.
