@@ -11,7 +11,7 @@ namespace PTHunter
             [Option("no-banner", HelpText = "Disable welcome banner")]
             public bool NoBanner { get; set; }
 
-            [Option('h', "host", Required = true, Separator =';', HelpText = "Specifies the target host(s). Multiple hosts must be separated with ';'")]
+            [Option('h', "host", Required = true, Separator = ';', HelpText = "Specifies the target host(s). Multiple hosts must be separated with ';'")]
             public IEnumerable<string> Host { get; set; }
 
             [Option('p', "payload", HelpText = "Specifies the payload file")]
@@ -69,12 +69,46 @@ namespace PTHunter
                 }
             }
         }
+        [Verb("discover", HelpText = "Scan the page for potential vulnerabilities")]
+        public class DiscoverOptions
+        {
+            [Option("no-banner", HelpText = "Disable welcome banner")]
+            public bool NoBanner { get; set; }
+
+            [Option('v', "verbose", HelpText = "Enables detailed console output")]
+            public bool Verbose { get; set; }
+
+            [Option('c', "cookie", HelpText = "Specifies cookies. Multiple cookies must be separated with ';'")]
+            public string Cookie { get; set; }
+
+            [Option('a', "auth", HelpText = "Specifies auth tokens and sessions")]
+            public string Auth { get; set; }
+
+            [Option("user-agent", HelpText = "Specifies the user agent. RANDOM for random user agent")]
+            public string UserAgent { get; set; }
+
+            [Option('b', "break-on-find", HelpText = "Specifies whether the host scan should terminate after the first detection")]
+            public bool Break { get; set; }
+
+            [Option('B', "break-on-error", HelpText = "Specifies whether the host scan should terminate after the first http error")]
+            public bool BreakOnError { get; set; }
+
+            [Option('H', "header", HelpText = "Specifies request headers in JSON format (Replace \" with \')")]
+            public string Header { get; set; }
+
+            [Option("basic", HelpText = "Specifies the credentials for basic authentication (username:password)", Separator = ':')]
+            public IEnumerable<string> BasicAuthCreds { get; set; }
+
+            [Option('t', "target", HelpText = "Specifies the scan target", Required = true)]
+            public string Target { get; set; }
+        }
+
         static int Main(string[] args)
         {
-            
-            return CommandLine.Parser.Default.ParseArguments<AttackOptions>(args)
+            return CommandLine.Parser.Default.ParseArguments<AttackOptions, DiscoverOptions>(args)
               .MapResult(
                 (AttackOptions opts) => Attack.StartAttackAsync(opts).Result,
+                (DiscoverOptions opts) => Discover.StartDiscoverAsync(opts).Result,
                 errs => 1);
         }
     }
