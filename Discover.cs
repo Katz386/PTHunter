@@ -36,7 +36,7 @@ namespace PTHunter
                 if (string.IsNullOrEmpty(url)) url = match.Groups[3].Value;
 
                 string absoluteUrl = ResolveUrl(url, baseUrl);
-                if (!string.IsNullOrEmpty(absoluteUrl))
+                if (!string.IsNullOrEmpty(absoluteUrl) && absoluteUrl.Contains("?"))
                 {
                     links.Add(absoluteUrl);
                 }
@@ -210,6 +210,5 @@ namespace PTHunter
 
             return 0;
         }
-
     }
 }
