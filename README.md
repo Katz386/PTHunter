@@ -18,6 +18,8 @@ $ git clone https://github.com/M0RTUM/PTHunter.git
 $ cd PTHunter
 $ dotnet publish -c Release -r linux-x64 --self-contained true -p:PublishSingleFile=true -o ./publish
 # sudo mv ./publish/PTHunter /usr/local/bin/pthunter
+# sudo mv ./publish/wordlists /usr/local/share/pthunter/wordlists
+# sudo mv ./publish/user-agents.txt /usr/local/share/pthunter/user-agents.txt
 $ cd ..
 $ rm -rf PTHunter
 $ pthunter --help

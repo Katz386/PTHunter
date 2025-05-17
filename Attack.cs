@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Reflection.PortableExecutable;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 
 namespace PTHunter
 {
@@ -63,6 +64,20 @@ namespace PTHunter
                     {
                         string filePath = Path.Combine(AppContext.BaseDirectory, $"{Vars.default_user_agents}");
 
+                        if (!File.Exists(filePath))
+                        {
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                            {
+                                filePath = Path.Combine("/usr/local/share/pthunter", Vars.default_user_agents);
+
+                                if (!File.Exists(filePath))
+                                {
+                                    Utils.WriteLine($"User agents files '{Vars.default_user_agents}' doesn`t exist", WType.Error);
+                                    return 1;
+                                }
+                            }
+                        }
+
                         string selectedLine = null;
                         int count = 0;
                         Random rand = new Random();
@@ -105,8 +120,29 @@ namespace PTHunter
 
             if (!File.Exists(opts.Payload) && opts.PayloadString.Count() == 0) 
             {
-                Utils.WriteLine($"Payload file '{opts.Payload}' not found", WType.Error);
-                return 1;
+                if (File.Exists(Path.Combine(AppContext.BaseDirectory, "wordlists", $"{opts.Payload}")))
+                {
+                    opts.Payload = Path.Combine(AppContext.BaseDirectory, "wordlists", $"{opts.Payload}");
+                }
+                else
+                {
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        opts.Payload = Path.Combine("/usr/local/share/pthunter/wordlists", opts.Payload);
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        opts.Payload = Path.Combine("/usr/local/share/pthunter/wordlists", opts.Payload);
+                    }
+
+                    if (!File.Exists(opts.Payload) && opts.PayloadString.Count() == 0)
+                    {
+                        Utils.WriteLine($"Payload file '{opts.Payload}' not found", WType.Error);
+                        return 1;
+                    }
+                }
+
+
             }
 
             if (String.IsNullOrEmpty(opts.Tag))
