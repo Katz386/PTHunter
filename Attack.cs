@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static PTHunter.Program;
-using static System.Net.Mime.MediaTypeNames;
-using System.Text.Json;
-using System.Reflection.PortableExecutable;
-using System.Net;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
+using System.Text;
+using static PTHunter.Program;
 
 namespace PTHunter
 {
