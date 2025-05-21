@@ -133,6 +133,9 @@ namespace PTHunter
             [Option('b', "break-on-find", HelpText = "Specifies whether the host scan should terminate after the first detection")]
             public bool Break { get; set; }
 
+            [Option('S', "save-starting-path", HelpText = "Specifies whether to save the starting path")]
+            public bool SaveStartingPath { get; set; }
+
             [Option('B', "break-on-error", HelpText = "Specifies whether the host scan should terminate after the first http error")]
             public bool BreakOnError { get; set; }
 

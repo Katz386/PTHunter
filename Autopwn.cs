@@ -103,7 +103,7 @@ namespace PTHunter
         }
 
 
-        static string ReplaceFilePathValue(string url, string replace_string)
+        static string ReplaceFilePathValue(string url, string replace_string, bool save_start_path)
         {
             var uri = new Uri(url);
             var query = HttpUtility.ParseQueryString(uri.Query);
@@ -117,7 +117,15 @@ namespace PTHunter
                 string value = query[key];
                 if (!string.IsNullOrEmpty(value) && !String.IsNullOrEmpty(Path.GetExtension(value)))
                 {
-                    query[key] = replace_string;
+                    if (save_start_path)
+                    {
+                        query[key] = value.Replace(Path.GetFileName(value), replace_string);
+                    }
+                    else
+                    {
+                        query[key] = replace_string;
+                    }
+
                     replaced = true;
                     break;
                 }
@@ -126,9 +134,19 @@ namespace PTHunter
             if (!replaced)
                 return null;
 
+            var queryParts = new List<string>();
+            foreach (string key in query.AllKeys)
+            {
+                if (key == null) continue;
+                string value = query[key];
+                queryParts.Add($"{key}={value}");
+            }
+
+            var newQuery = string.Join("&", queryParts);
+
             var uriBuilder = new UriBuilder(uri)
             {
-                Query = query.ToString()
+                Query = newQuery
             };
 
             return uriBuilder.ToString();
@@ -320,15 +338,16 @@ namespace PTHunter
                     Console.WriteLine("Found links:");
                     Console.WriteLine();
                     List<string> unique_links = new List<string>();
-
                     foreach (var link in links)
                     {
                         Utils.WriteLine(link, WType.Success);
-                        string result = ReplaceFilePathValue(link, rand_string);
+                        string result = ReplaceFilePathValue(link, rand_string, opts.SaveStartingPath);
 
                         if (!unique_links.Contains(result) && !String.IsNullOrEmpty(result))
                             unique_links.Add(result);
                     }
+
+                   
 
                     Console.WriteLine();
                     Console.WriteLine($"Total unique links count: {unique_links.Count}");
