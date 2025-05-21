@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using static PTHunter.Program;
 
 namespace PTHunter
@@ -19,6 +20,55 @@ namespace PTHunter
             {
                 return "";
             }
+        }
+
+        static string ReplaceFilePathValue(string url, string replace_string, bool save_start_path)
+        {
+            var uri = new Uri(url);
+            var query = HttpUtility.ParseQueryString(uri.Query);
+
+            bool replaced = false;
+
+            foreach (string key in query.AllKeys)
+            {
+                if (key == null) continue;
+
+                string value = query[key];
+                if (!string.IsNullOrEmpty(value) && !String.IsNullOrEmpty(Path.GetExtension(value)))
+                {
+                    if (save_start_path)
+                    {
+                        query[key] = value.Replace(Path.GetFileName(value), replace_string);
+                    }
+                    else
+                    {
+                        query[key] = replace_string;
+                    }
+
+                    replaced = true;
+                    break;
+                }
+            }
+
+            if (!replaced)
+                return null;
+
+            var queryParts = new List<string>();
+            foreach (string key in query.AllKeys)
+            {
+                if (key == null) continue;
+                string value = query[key];
+                queryParts.Add($"{key}={value}");
+            }
+
+            var newQuery = string.Join("&", queryParts);
+
+            var uriBuilder = new UriBuilder(uri)
+            {
+                Query = newQuery
+            };
+
+            return uriBuilder.ToString();
         }
 
         static List<string> ExtractLinks(string html, string baseUrl)
@@ -195,9 +245,25 @@ namespace PTHunter
                 if (links.Count > 0)
                 {
                     Console.WriteLine("Found links:");
+                    Console.WriteLine();
+                    List<string> unique_links = new List<string>();
                     foreach (var link in links)
                     {
                         Utils.WriteLine(link, WType.Success);
+                        string result = ReplaceFilePathValue(link, "X", false);
+
+                        if (!unique_links.Contains(result) && !String.IsNullOrEmpty(result))
+                            unique_links.Add(result);
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine($"Total unique links count: {unique_links.Count}");
+                    Console.WriteLine("Unique links:");
+                    Console.WriteLine();
+
+                    foreach (var link in unique_links)
+                    {
+                        Console.WriteLine(link);
                     }
                 }
 
