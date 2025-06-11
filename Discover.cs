@@ -86,7 +86,7 @@ namespace PTHunter
                 if (string.IsNullOrEmpty(url)) url = match.Groups[3].Value;
 
                 string absoluteUrl = ResolveUrl(url, baseUrl);
-                if (!string.IsNullOrEmpty(absoluteUrl) && absoluteUrl.Contains("?"))
+                if (!string.IsNullOrEmpty(absoluteUrl))
                 {
                     links.Add(absoluteUrl);
                 }
@@ -244,8 +244,8 @@ namespace PTHunter
 
                 if (links.Count > 0)
                 {
-                    Console.WriteLine("Found links:");
-                    Console.WriteLine();
+                    Console.WriteLine("Found links (These links could potentially be vulnerable!):");
+                    Console.WriteLine("---------------------------------------------------");
                     List<string> unique_links = new List<string>();
                     foreach (var link in links)
                     {
@@ -256,15 +256,17 @@ namespace PTHunter
                             unique_links.Add(result);
                     }
 
-                    Console.WriteLine();
+                    Console.WriteLine("---------------------------------------------------");
                     Console.WriteLine($"Total unique links count: {unique_links.Count}");
                     Console.WriteLine("Unique links:");
-                    Console.WriteLine();
+                    Console.WriteLine("---------------------------------------------------");
 
                     foreach (var link in unique_links)
                     {
                         Console.WriteLine(link);
                     }
+
+                    Console.WriteLine("---------------------------------------------------");
                 }
 
             }
