@@ -16,6 +16,6 @@
 
         public const string default_payload = "payload.txt";
         public const string default_user_agents = "user-agents.txt";
-        public const string version = "1.0.0.1";
+        public const string version = "1.0.0.2";
     }
 }

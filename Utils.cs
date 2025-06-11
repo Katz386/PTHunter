@@ -77,5 +77,29 @@
             }
             Console.ResetColor();
         }
+
+        public static void WriteColored(string text, WType type)
+        {
+            switch (type)
+            {
+                case WType.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(text);
+                    break;
+                case WType.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(text);
+                    break;
+                case WType.Success:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(text);
+                    break;
+                case WType.Info:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write(text);
+                    break;
+            }
+            Console.ResetColor();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Drawing;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -234,12 +235,63 @@ namespace PTHunter
                 string base_url = GetBaseUrl(opts.Target);
 
                 Console.WriteLine($"Base url: {base_url}");
-                var response = await client.GetStringAsync(opts.Target);
+                var response = await client.GetAsync(opts.Target);
+                Console.WriteLine();
+                Console.WriteLine("Response headers:");
+                Console.WriteLine("[----------------------]");
+                foreach (var header in response.Headers)
+                {
+                    Console.WriteLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                }
+                Console.WriteLine("[----------------------]");
+                Console.WriteLine();
+                Console.WriteLine("Content headers:");
+                Console.WriteLine("[----------------------]");
+                foreach (var header in response.Content.Headers)
+                {
+                    Console.WriteLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                }
+                Console.WriteLine("[----------------------]");
+                Console.WriteLine();
+                Console.WriteLine("Webserver check...");
 
-                List<string> links = ExtractLinks(response, base_url);
+                if (response.Headers.Contains("Server"))
+                {
+                    var serverHeader = response.Headers.GetValues("Server");
+                    Console.Write("Webserver: " + string.Join(", ", serverHeader));
+
+                    var lst = VulnsChecker.CheckWebserver(serverHeader.ToList()[0]);
+
+                    if (lst.Count > 0)
+                    {
+                        Utils.WriteColored($" ( VULNERABLE! ){Environment.NewLine}", WType.Error);
+                        Console.WriteLine("---------------------------------------------------");
+                        Console.WriteLine();
+                        foreach (var vuln in lst) 
+                        {
+                            Utils.WriteColored(vuln.Name, WType.Error);
+                            Console.Write($" :{Environment.NewLine}");
+                            Console.WriteLine(vuln.Description);
+                            Console.WriteLine();
+                        }
+                    }
+                    else
+                    {
+                        Console.Write(Environment.NewLine);
+                    }
+                    Console.WriteLine("---------------------------------------------------");
+                }
+                else
+                {
+                }
+
+                Console.WriteLine("Reading content...");
+                var response_content = await response.Content.ReadAsStringAsync();
+
+                List<string> links = ExtractLinks(response_content, base_url);
 
                 Console.WriteLine($"Time elapsed: {watch.ElapsedMilliseconds}");
-                Console.WriteLine($"Content length: {response.Length}");
+                Console.WriteLine($"Content length: {response_content.Length}");
                 Console.WriteLine($"Links count: {links.Count}");
 
                 if (links.Count > 0)
