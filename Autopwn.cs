@@ -347,8 +347,6 @@ namespace PTHunter
                             unique_links.Add(result);
                     }
 
-                   
-
                     Console.WriteLine();
                     Console.WriteLine($"Total unique links count: {unique_links.Count}");
                     Console.WriteLine("Unique links:");
